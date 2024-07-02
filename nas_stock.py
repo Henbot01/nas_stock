@@ -1,5 +1,6 @@
 from ftplib import FTP, all_errors
 import ftplib
+import time
 
 
 #connection details
@@ -25,8 +26,8 @@ with FTP(host = host, user = usr, passwd = passwrd) as ftp:
     ftp.dir(files.append)
     for f in files:
         print(f)
-    # downloads the daily securities list
-    with open('nasdaqlisted.txt', 'w') as local_file:
+    # downloads the daily securities list and saves as a dated file yyyymmdd<filename>.txt
+    with open(time.strftime("%Y%m%d")+'nasdaqlisted.txt', 'w') as local_file:
         response = ftp.retrbinary("RETR " + filename,open(filename,'wb').write)
         if response.startswith('226'):
             print('Transfer complete')
