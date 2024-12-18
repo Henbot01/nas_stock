@@ -3,4 +3,5 @@ basic python script to download the daily official list from ftp.nasdaqtrader.co
 using python package ftplib
 based on details found here https://pythonprogramming.net/ftp-transfers-python-ftplib/
 
-#user and password removed can be found at nasdaqtrader.com
+saves files to ./downloads 
+
