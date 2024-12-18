@@ -1,38 +1,51 @@
-from ftplib import FTP, all_errors
-import ftplib
-import time
+from ftplib import FTP
+from datetime import datetime
+import os
 
+def download_selected_files():
+    # FTP server details
+    ftp_host = "ftp.nasdaqtrader.com"
+    ftp_user = "anonymous"
+    ftp_pass = "guest"
+    remote_dir = "/symboldirectory"
+    local_dir = "./downloads"  # Local directory to save the files
 
-#connection details
-host = 'ftp.nasdaqtrader.com'
-port = 21
+    # List of files to download
+    target_files = {"nasdaqlisted.txt", "nasdaqtraded.txt", "mfundslist.txt"}
 
-usr = ''
-passwrd = ''
+    # Connect to the FTP server
+    ftp = FTP(ftp_host)
+    ftp.login(user=ftp_user, passwd=ftp_pass)
 
-local_file = '\mfunds' # local file directory path.
-remote_dir = ''
+    # Navigate to the desired directory
+    ftp.cwd(remote_dir)
 
-filename = 'nasdaqlisted.txt'
+    # List all files in the directory
+    files = ftp.nlst()
+    print(f"Found {len(files)} files in {remote_dir}")
 
-with FTP(host = host, user = usr, passwd = passwrd) as ftp:
-    # returns the welcome code, you want to see a 220
-    print(ftp.getwelcome())
-    # navigate to the symbol directory
-    print(ftp.cwd('Symboldirectory'))
-    print('----')
-    #prints the files as a list
-    files = []
-    ftp.dir(files.append)
-    for f in files:
-        print(f)
-    # downloads the daily securities list and saves as a dated file yyyymmdd<filename>.txt
-    with open(time.strftime("%Y%m%d")+'nasdaqlisted.txt', 'w') as local_file:
-        response = ftp.retrbinary("RETR " + filename,open(filename,'wb').write)
-        if response.startswith('226'):
-            print('Transfer complete')
-        else:
-            print('Error transferring')
+    # Ensure the local directory exists
+    if not os.path.exists(local_dir):
+        os.makedirs(local_dir)
 
-#be nice ensure the closure of the connection to use elsehwere.
-ftp.close()
+    # Get today's date in YYYYMMDD format
+    current_date = datetime.now().strftime("%Y%m%d")
+
+    # Download only the target files
+    for file in files:
+        if file in target_files:
+            # Prepend the current date to the file name
+            new_file_name = f"{current_date}_{file}"
+            local_file_path = os.path.join(local_dir, new_file_name)
+
+            # Download the file
+            with open(local_file_path, "wb") as local_file:
+                ftp.retrbinary(f"RETR {file}", local_file.write)
+            print(f"Downloaded and saved as: {new_file_name}")
+
+    # Close the FTP connection
+    ftp.quit()
+    print("Selected files have been downloaded and renamed.")
+
+if __name__ == "__main__":
+    download_selected_files()
