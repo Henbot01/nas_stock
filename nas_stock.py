@@ -3,12 +3,12 @@ from datetime import datetime
 import os
 
 def download_selected_files():
-    # FTP server details
+    # FTP server details    
     ftp_host = "ftp.nasdaqtrader.com"
     ftp_user = "anonymous"
     ftp_pass = "guest"
     remote_dir = "/symboldirectory"
-    local_dir = "./downloads"  # Local directory to save the files
+    local_dir = "./Downloads"  # Local directory to save the files
 
     # List of files to download
     target_files = {"nasdaqlisted.txt", "nasdaqtraded.txt", "mfundslist.txt"}
