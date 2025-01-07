@@ -2,13 +2,15 @@ from ftplib import FTP
 from datetime import datetime
 import os
 import csv
+import sys
 
 def log_message_csv(log_file, message):
-    #Helper function to log messages to a CSV file with SQL-compatible datetime.
+    """Helper function to log messages to a CSV file with SQL-compatible datetime."""
+    script_name = os.path.basename(sys.argv[0])
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(log_file, "a", newline="") as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow([timestamp, message])
+        writer.writerow([timestamp, script_name, message])
 
 def download_selected_files():
     # FTP server details
